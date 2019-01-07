@@ -69,9 +69,9 @@
 
 (defun ruby-test-unit-get-test-file-command-string (test-file-name &optional test-options ruby-options)
   "Ruby Test::Unitのテストファイルを実行するコマンドを文字列で返す。"
-  (concat ruby-test-unit-ruby-command " "
-          (if ruby-options (concat ruby-options " ") "")
-          (shell-quote-argument test-file-name)
+  (concat ruby-test-unit-ruby-command
+          (if ruby-options (concat  " " ruby-options) "")
+          " " (shell-quote-argument test-file-name)
           (if test-options (concat " " test-options) "")))
 
 (defun ruby-test-unit-get-test-class-command-string (test-file-name test-class-name &optional test-options ruby-options)
