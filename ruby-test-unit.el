@@ -13,11 +13,11 @@
   "TestRunnerのオプションを設定する。")
 
 (defvar ruby-test-unit-method-definition-regexp
-  '((pattern . "\\(?:^\\|\\s-\\)def\\s-+\\(test_[^ \t(){}?!]+[?!]?\\)")
+  '((pattern . "\\(?:^\\|\\s-\\)def\\s-+\\(test_[^[:space:](){}?!]+[?!]?\\)")
     (name-pos . 1)))
 
 (defvar ruby-test-unit-class-definition-regexp
-  '((pattern . "\\(?:^\\|\\s-\\)class\\s-+\\(\\S-+\\)\\s-*<\\s-*Test::Unit::TestCase")
+  '((pattern . "\\(?:^\\|\\s-\\)class\\s-+\\([[:upper:]]\\S-*\\)\\s-*<\\s-*Test::Unit::TestCase")
     (name-pos . 1)))
 
 (defun ruby-test-unit-get-test-file-name ()
