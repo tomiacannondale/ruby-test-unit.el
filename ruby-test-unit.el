@@ -1,4 +1,46 @@
-;;; ruby-unit-test.el --- run Ruby Test::Unit test case in Emacs compilation mode.
+;;; ruby-unit-test.el --- run Ruby Test::Unit test case in Emacs compilation-mode
+
+;; Copyright (C) 2019 by Yoshinori Toki
+
+;; Author: Yoshinori Toki <toki@freedom.ne.jp>
+;; Version: 0.1
+;; Package-Requires: ((compile) (ruby-mode))
+;; Keywords: ruby, test
+;; URL: https://github.com/y10k/ruby-test-unit.el
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+;;
+;; Usage:
+;;
+;; modity .emacs to set ruby-test-unit key definition in ruby-mode.
+;;
+;;   (require 'ruby-test-unit)
+;;   (add-hook 'ruby-mode-hook
+;;             (lambda () (ruby-test-unit-keys)))
+;;
+;; Key bindings in ruby-mode:
+;;   
+;;   C-c .  ruby-test-unit-run-test-method
+;;   C-c @  ruby-test-unit-run-test-class
+;;   C-c f  ruby-test-unit-run-test-file
+;;   C-c r  ruby-test-unit-run-rake-test
+;;   C-c c  compile (use to run the last test again)
+;;
+
+;;; Code:
 
 (require 'compile)
 (require 'ruby-mode)
@@ -89,6 +131,7 @@
                                                         ruby-options)
           " " (shell-quote-argument (concat "-n" test-method-name))))
 
+;;;#autoload
 (defun ruby-test-unit-run-test-method (ruby-debug-option-p)
   "run test method of Ruby Test::Unit at compilation mode."
   (interactive "P")
@@ -115,6 +158,7 @@
             (message "Not found a Ruby Test::Unit method."))
         (message "Not a ruby script file.")))))
 
+;;;#autoload
 (defun ruby-test-unit-run-test-class (ruby-debug-option-p)
   "run test class of Ruby Test::Unit at compilation mode."
   (interactive "P")
@@ -136,6 +180,7 @@
             (message "Not found a Ruby Test::Unit test-case class."))
         (message "Not a ruby script file.")))))
 
+;;;#autoload
 (defun ruby-test-unit-run-test-file (ruby-debug-option-p)
   "run test file of Ruby Test::Unit at compilation mode."
   (interactive "P")
@@ -152,6 +197,7 @@
             (compile command-string))
         (message "Not a ruby script file.")))))
 
+;;;#autoload
 (defun ruby-test-unit-run-rake-test ()
   "run test task of Rake at compilation mode."
   (interactive)
@@ -160,6 +206,7 @@
                        (concat " " (shell-quote-argument (concat "TESTOPTS=" ruby-test-unit-runner-options)))
                      ""))))
 
+;;;#autoload
 (defun ruby-test-unit-keys ()
   "set local key defs for ruby-test-unit in ruby-mode"
   (define-key ruby-mode-map (kbd "C-c .") 'ruby-test-unit-run-test-method)
@@ -176,12 +223,13 @@
     (add-to-list 'compilation-error-regexp-alist (car i))
     (add-to-list 'compilation-error-regexp-alist-alist i)))
 
-(ruby-test-unit-keys)
 (ruby-test-unit-compilation-errors)
 
 (provide 'ruby-test-unit)
 
-; Local Variables:
-; mode: Emacs-Lisp
-; indent-tabs-mode: nil
-; End:
+;; Local Variables:
+;; mode: Emacs-Lisp
+;; indent-tabs-mode: nil
+;; End:
+
+;;; ruby-unit-test.el ends here
