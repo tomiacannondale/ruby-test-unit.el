@@ -1,16 +1,16 @@
-;;; ruby-unit-test.el --- Emacs からコンパイルモードでTest::Unitのテストケースを実行する。
+;;; ruby-unit-test.el --- run Ruby Test::Unit test case in Emacs compilation mode.
 
 (require 'compile)
 (require 'ruby-mode)
 
 (defvar ruby-test-unit-ruby-command "bundle exec ruby"
-  "Rubyを実行するコマンドを設定する。")
+  "a Ruby command to run test of Ruby Test::Unit at compilation mode.")
 
 (defvar ruby-test-unit-rake-test-command "bundle exec rake test"
-  "Rakeでtestタスクを実行するコマンドを設定する。")
+  "a Rake command to run test task at compilation mode.")
 
 (defvar ruby-test-unit-runner-options nil
-  "TestRunnerのオプションを設定する。")
+  "command optionfs of Ruby Test::Unit.")
 
 (defvar ruby-test-unit-method-definition-regexp
   '((pattern . "\\(?:^\\|\\s-\\)def\\s-+\\(test_[^[:space:](){}?!]+[?!]?\\)")
@@ -21,68 +21,68 @@
     (name-pos . 1)))
 
 (defun ruby-test-unit-get-test-file-name ()
-  "カレントバッファで開いているテストファイルの名前を返す。"
+  "return the name of the test file opened in the current buffer."
   (let ((file-name (buffer-file-name)))
     (if file-name
         (if (string-match ".*\\.[Rr][Bb]$" file-name)
             file-name))))
 
 (defun ruby-test-unit-get-point-at-beginning-of-line ()
-  "ポイントをカレントバッファの行頭に移動してポイント値を返す。"
+  "move to the head of the line at current point of current buffer and return the point."
   (beginning-of-line)
   (point))
 
 (defun ruby-test-unit-get-point-at-end-of-line ()
-  "ポイントをカレントバッファの行末に移動してポイント値を返す。"
+  "move to the end of the line at current point of current buffer and return the point."
   (end-of-line)
   (point))
 
 (defun ruby-test-unit-get-line ()
-  "カレントバッファのポイントの1行を文字列で返す。"
+  "return a line of current point of the current buffer as a string."
   (buffer-substring-no-properties
    (ruby-test-unit-get-point-at-beginning-of-line)
    (ruby-test-unit-get-point-at-end-of-line)))
 
 (defun ruby-test-unit-goto-test-method-definition ()
-  "メソッド定義の行へ移動する。"
-  (end-of-line)                         ;カレント行を検索対象に含めるため
+  "move to the test method definition line."
+  (end-of-line)                         ; to include the current line as a search target
   (let ((case-fold-search nil))
     (re-search-backward (cdr (assq 'pattern ruby-test-unit-method-definition-regexp)) nil t)))
 
 (defun ruby-test-unit-goto-test-class-definition ()
-  "クラス定義の行へ移動する。"
-  (end-of-line)                         ;カレント行を検索対象に含めるため
+  "move to the test class definition line."
+  (end-of-line)                         ; to include the current line as a search target
   (let ((case-fold-search nil))
     (re-search-backward (cdr (assq 'pattern ruby-test-unit-class-definition-regexp)) nil t)))
 
 (defun ruby-test-unit-get-test-method-name (line)
-  "Ruby Test::Unitのテストメソッドの名前を文字列から取り出して返す。"
+  "retrieve the name of the test method from the test method definition line string."
   (let ((case-fold-search nil))
     (if (string-match (cdr (assq 'pattern ruby-test-unit-method-definition-regexp)) line)
         (match-string (cdr (assq 'name-pos ruby-test-unit-method-definition-regexp)) line))))
 
 (defun ruby-test-unit-get-test-class-name (line)
-  "Ruby Test::Unitのテストクラスの名前を文字列から取り出して返す。"
+  "retrieve the name of the test class from the test class definition line string."
   (let ((case-fold-search nil))
     (if (string-match (cdr (assq 'pattern ruby-test-unit-class-definition-regexp)) line)
         (match-string (cdr (assq 'name-pos ruby-test-unit-class-definition-regexp)) line))))
 
 (defun ruby-test-unit-get-test-file-command-string (test-file-name &optional test-options ruby-options)
-  "Ruby Test::Unitのテストファイルを実行するコマンドを文字列で返す。"
+  "return the command string to execute the test file."
   (concat ruby-test-unit-ruby-command
           (if ruby-options (concat  " " ruby-options) "")
           " " (shell-quote-argument test-file-name)
           (if test-options (concat " " test-options) "")))
 
 (defun ruby-test-unit-get-test-class-command-string (test-file-name test-class-name &optional test-options ruby-options)
-  "Ruby Test::Unitのテストクラスを実行するコマンドを文字列で返す。"
+  "return the command string to execute the test class."
   (concat (ruby-test-unit-get-test-file-command-string test-file-name
                                                        test-options
                                                        ruby-options)
           " " (shell-quote-argument (concat "-t/\\b" test-class-name "\\z/"))))
 
 (defun ruby-test-unit-get-test-method-command-string (test-file-name test-class-name test-method-name &optional test-options ruby-options)
-  "Ruby Test::Unitのテストメソッドを実行するコマンドを文字列で返す。"
+  "return the command string to execute the test method."
   (concat (ruby-test-unit-get-test-class-command-string test-file-name
                                                         test-class-name
                                                         test-options
