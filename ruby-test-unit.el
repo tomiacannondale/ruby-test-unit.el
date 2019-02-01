@@ -46,10 +46,10 @@
 (require 'ruby-mode)
 
 (defvar ruby-test-unit-ruby-command "bundle exec ruby"
-  "Ruby command to run test of Ruby Test::Unit at 'compilation-mode'.")
+  "Ruby command to run test of Ruby Test::Unit at `compilation-mode'.")
 
 (defvar ruby-test-unit-rake-test-command "bundle exec rake test"
-  "Rake command to run test task at 'compilation-mode'.")
+  "Rake command to run test task at `compilation-mode'.")
 
 (defvar ruby-test-unit-runner-options nil
   "Command options of Ruby Test::Unit.")
@@ -98,33 +98,45 @@
     (re-search-backward (cdr (assq 'pattern ruby-test-unit-class-definition-regexp)) nil t)))
 
 (defun ruby-test-unit-get-test-method-name (line)
-  "Retrieve the name of the test method from the test method definition line string."
+  "Retrieve the name of the test method from the test method definition LINE string."
   (let ((case-fold-search nil))
     (if (string-match (cdr (assq 'pattern ruby-test-unit-method-definition-regexp)) line)
         (match-string (cdr (assq 'name-pos ruby-test-unit-method-definition-regexp)) line))))
 
 (defun ruby-test-unit-get-test-class-name (line)
-  "Retrieve the name of the test class from the test class definition line string."
+  "Retrieve the name of the test class from the test class definition LINE string."
   (let ((case-fold-search nil))
     (if (string-match (cdr (assq 'pattern ruby-test-unit-class-definition-regexp)) line)
         (match-string (cdr (assq 'name-pos ruby-test-unit-class-definition-regexp)) line))))
 
 (defun ruby-test-unit-get-test-file-command-string (test-file-name &optional test-options ruby-options)
-  "Return the command string to execute the test file."
+  "Return the command string to execute the test file.
+TEST-FILE-NAME is target test file.
+TEST-OPTIONS is Test::Unit's options.
+RUBY-OPTIONS is ruby intepreter's options."
   (concat ruby-test-unit-ruby-command
           (if ruby-options (concat  " " ruby-options) "")
           " " (shell-quote-argument test-file-name)
           (if test-options (concat " " test-options) "")))
 
 (defun ruby-test-unit-get-test-class-command-string (test-file-name test-class-name &optional test-options ruby-options)
-  "Return the command string to execute the test class."
+  "Return the command string to execute the test class.
+TEST-FILE-NAME is target test file.
+TEST-CLASS-NAME is target test class.
+TEST-OPTIONS is Test::Unit's options.
+RUBY-OPTIONS is ruby intepreter's options."
   (concat (ruby-test-unit-get-test-file-command-string test-file-name
                                                        test-options
                                                        ruby-options)
           " " (shell-quote-argument (concat "-t/\\b" test-class-name "\\z/"))))
 
 (defun ruby-test-unit-get-test-method-command-string (test-file-name test-class-name test-method-name &optional test-options ruby-options)
-  "Return the command string to execute the test method."
+  "Return the command string to execute the test method.
+TEST-FILE-NAME is target test file.
+TEST-CLASS-NAME is target test class.
+TEST-METHOD-NAME is target test method.
+TEST-OPTIONS is Test::Unit's options.
+RUBY-OPTIONS is ruby intepreter's options."
   (concat (ruby-test-unit-get-test-class-command-string test-file-name
                                                         test-class-name
                                                         test-options
@@ -133,7 +145,8 @@
 
 ;;;#autoload
 (defun ruby-test-unit-run-test-method (ruby-debug-option-p)
-  "Run test method of Ruby Test::Unit at 'compilation-mode'."
+  "Run test method of Ruby Test::Unit at `compilation-mode'.
+If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
   (interactive "P")
   (save-excursion
     (let ((test-file-name (ruby-test-unit-get-test-file-name)))
@@ -160,7 +173,8 @@
 
 ;;;#autoload
 (defun ruby-test-unit-run-test-class (ruby-debug-option-p)
-  "Run test class of Ruby Test::Unit at 'compilation-mode'."
+  "Run test class of Ruby Test::Unit at `compilation-mode'.
+If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
   (interactive "P")
   (save-excursion
     (let ((test-file-name (ruby-test-unit-get-test-file-name)))
@@ -182,7 +196,8 @@
 
 ;;;#autoload
 (defun ruby-test-unit-run-test-file (ruby-debug-option-p)
-  "Run test file of Ruby Test::Unit at 'compilation-mode'."
+  "Run test file of Ruby Test::Unit at `compilation-mode'.
+If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
   (interactive "P")
   (save-excursion
     (let ((test-file-name (ruby-test-unit-get-test-file-name)))
@@ -199,7 +214,7 @@
 
 ;;;#autoload
 (defun ruby-test-unit-run-rake-test ()
-  "Run test task of Rake at 'compilation-mode'."
+  "Run test task of Rake at `compilation-mode'."
   (interactive)
   (compile (concat ruby-test-unit-rake-test-command
                    (if ruby-test-unit-runner-options
@@ -208,7 +223,7 @@
 
 ;;;#autoload
 (defun ruby-test-unit-keys ()
-  "Set local key defs for ruby-test-unit in 'ruby-mode'."
+  "Set local key defs for ruby-test-unit in `ruby-mode'."
   (define-key ruby-mode-map (kbd "C-c .") 'ruby-test-unit-run-test-method)
   (define-key ruby-mode-map (kbd "C-c @") 'ruby-test-unit-run-test-class)
   (define-key ruby-mode-map (kbd "C-c f") 'ruby-test-unit-run-test-file)
@@ -216,7 +231,7 @@
   (define-key ruby-mode-map (kbd "C-c c") 'compile))
 
 (defun ruby-test-unit-compilation-errors ()
-  "Set error defs for ruby-test-unit in 'compilation-mode'."
+  "Set error defs for ruby-test-unit in `compilation-mode'."
   (dolist (i '((ruby-1 "\\s-*\\[?\\(\\S-+\\):\\([0-9]+\\)\\(?::in\\|$\\)" 1 2)
                (ruby-2 "\\s-*from \\(\\S-+\\):\\([0-9]+\\)\\(?::in\\|$\\)" 1 2)
                (ruby-3 "\\[\\(\\S-+\\):\\([0-9]+\\)\\]:$" 1 2)))
