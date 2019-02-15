@@ -55,6 +55,9 @@
 (defvar ruby-test-unit-runner-options nil
   "Command options of Ruby Test::Unit.")
 
+(defvar ruby-test-unit-imenu-create-index-function 'ruby-imenu-create-index
+  "Set `ruby-imenu-create-index' function defined at `ruby-mode'.")
+
 (defvar ruby-test-unit-test-method-regexp
   '((pattern . "\\(.+\\)#\\(test_.+\\)")
     (class-pos . 1)
@@ -165,7 +168,7 @@ If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
       (if test-file-name
           (let ((test-method-full-name (ruby-test-unit-find-nearest-test-method
                                         pos
-                                        (ruby-imenu-create-index))))
+                                        (funcall ruby-test-unit-imenu-create-index-function))))
             (if test-method-full-name
                 (seq-let (test-class-name test-method-name) (ruby-test-unit-split-test-method test-method-full-name)
                   (let ((command-string
@@ -194,7 +197,7 @@ If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
       (if test-file-name
           (let ((test-class-name (ruby-test-unit-find-nearest-test-class
                                   pos
-                                  (ruby-imenu-create-index))))
+                                  (funcall ruby-test-unit-imenu-create-index-function))))
             (if test-class-name
                 (let ((command-string
                        (if ruby-debug-option-p
