@@ -4,7 +4,7 @@ ruby-test-unit.el --- run Ruby Test::Unit test case in Emacs compilation-mode
 Copyright (C) 2019 by Yoshinori Toki
 
 - Author: Yoshinori Toki <toki@freedom.ne.jp>
-- Version: 0.1
+- Version: 0.2
 - Package-Requires: ((compile) (ruby-mode))
 - Keywords: ruby, test
 - URL: <https://github.com/y10k/ruby-test-unit.el>
