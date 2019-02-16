@@ -161,12 +161,11 @@ RUBY-OPTIONS is ruby intepreter's options."
 If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
   (interactive "P")
   (save-excursion
-    (let ((pos (point))
-          (test-file-name (ruby-test-unit-get-test-file-name)))
+    (let ((test-file-name (ruby-test-unit-get-test-file-name))
+          (pos (point)))
       (if test-file-name
           (let ((test-method-full-name (ruby-test-unit-find-nearest-test-method
-                                        pos
-                                        (funcall ruby-test-unit-imenu-create-index-function))))
+                                        pos (funcall ruby-test-unit-imenu-create-index-function))))
             (if test-method-full-name
                 (seq-let (test-class-name test-method-name) (ruby-test-unit-split-test-method test-method-full-name)
                   (let ((command-string
@@ -190,12 +189,11 @@ If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
 If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
   (interactive "P")
   (save-excursion
-    (let ((pos (point))
-          (test-file-name (ruby-test-unit-get-test-file-name)))
+    (let ((test-file-name (ruby-test-unit-get-test-file-name))
+          (pos (point)))
       (if test-file-name
           (let ((test-class-name (ruby-test-unit-find-nearest-test-class
-                                  pos
-                                  (funcall ruby-test-unit-imenu-create-index-function))))
+                                  pos (funcall ruby-test-unit-imenu-create-index-function))))
             (if test-class-name
                 (let ((command-string
                        (if ruby-debug-option-p
