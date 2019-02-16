@@ -32,7 +32,7 @@
 ;;             (lambda () (ruby-test-unit-keys)))
 ;;
 ;; Key bindings in ruby-mode:
-;;   
+;;
 ;;   C-c .  ruby-test-unit-run-test-method
 ;;   C-c @  ruby-test-unit-run-test-class
 ;;   C-c f  ruby-test-unit-run-test-file
