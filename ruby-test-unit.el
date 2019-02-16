@@ -140,7 +140,7 @@ RUBY-OPTIONS is ruby intepreter's options."
   (concat (ruby-test-unit-get-test-file-command-string test-file-name
                                                        test-options
                                                        ruby-options)
-          " " (shell-quote-argument (concat "-t/\\b" test-class-name "\\z/"))))
+          " " (shell-quote-argument (concat "-t" test-class-name))))
 
 (defun ruby-test-unit-get-test-method-command-string (test-file-name test-class-name test-method-name &optional test-options ruby-options)
   "Return the command string to execute the test method.
