@@ -89,11 +89,9 @@
   "Get the nearest target.
 find the nearest target before POS.
 INDEX-ALIST is searched."
-  (let ((target-index-alist
-         (seq-filter (lambda (i)
-                       (<= (cdr i) pos))
-                     index-alist)))
-    (car (seq-take (reverse target-index-alist) 1))))
+  (car (last (seq-filter (lambda (i)
+                           (<= (cdr i) pos))
+                         index-alist))))
 
 (defun ruby-test-unit-find-nearest-test-method (pos ruby-imenu-index-alist)
   "Get the nearest test method.
