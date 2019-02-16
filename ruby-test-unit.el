@@ -65,23 +65,23 @@
 
 (defun ruby-test-unit-test-method-index (ruby-imenu-index-alist)
   "Get test method index assoc-list from RUBY-IMENU-INDEX-ALIST."
-  (seq-filter (lambda (i)
+  (seq-filter (lambda (index-pair)
                 (string-match-p (cdr (assq 'pattern ruby-test-unit-test-method-regexp))
-                                (car i)))
+                                (car index-pair)))
               ruby-imenu-index-alist))
 
 (defun ruby-test-unit-test-class-index (ruby-imenu-index-alist)
   "Get test class index assoc-list from RUBY-IMENU-INDEX-ALIST."
   (let ((test-class-name-list
-         (seq-uniq (mapcar (lambda (i)
+         (seq-uniq (mapcar (lambda (test-method-index-pair)
                              (if (string-match (cdr (assq 'pattern ruby-test-unit-test-method-regexp))
-                                               (car i))
+                                               (car test-method-index-pair))
                                  (match-string (cdr (assq 'class-pos ruby-test-unit-test-method-regexp))
-                                               (car i))))
+                                               (car test-method-index-pair))))
                            (ruby-test-unit-test-method-index ruby-imenu-index-alist)))))
-    (seq-filter (lambda (i)
-                  (seq-find (lambda (j)
-                              (equal j (car i)))
+    (seq-filter (lambda (index-pair)
+                  (seq-find (lambda (test-class-name)
+                              (equal (car index-pair) test-class-name))
                             test-class-name-list))
                 ruby-imenu-index-alist)))
 
@@ -89,8 +89,8 @@
   "Get the nearest target.
 find the nearest target before POS.
 INDEX-ALIST is searched."
-  (car (last (seq-filter (lambda (i)
-                           (<= (cdr i) pos))
+  (car (last (seq-filter (lambda (index-pair)
+                           (<= (cdr index-pair) pos))
                          index-alist))))
 
 (defun ruby-test-unit-find-nearest-test-method (pos ruby-imenu-index-alist)
