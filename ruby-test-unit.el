@@ -1,4 +1,4 @@
-;;; ruby-test-unit.el --- run Ruby Test::Unit test case in Emacs compilation-mode
+;;; ruby-test-unit.el --- run Ruby Test::Unit test case in Emacs compilation-mode  -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2019 by Yoshinori Toki
 
