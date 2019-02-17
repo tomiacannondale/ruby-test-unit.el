@@ -58,7 +58,7 @@
 (defvar ruby-test-unit-imenu-create-index-function 'ruby-imenu-create-index
   "Set `ruby-imenu-create-index' function defined at `ruby-mode'.")
 
-(defvar ruby-test-unit-test-method-regexp
+(defconst ruby-test-unit-test-method-regexp
   '((pattern . "\\(.+\\)#\\(test_.+\\)")
     (class-pos . 1)
     (method-pos . 2)))
