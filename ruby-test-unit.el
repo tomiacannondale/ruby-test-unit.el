@@ -56,6 +56,9 @@
 (defvar ruby-test-unit-runner-options nil
   "Command options of Ruby Test::Unit.")
 
+(defvar ruby-test-unit-runner-options-at-test-method "-v"
+  "Command options of Ruby Test::Unit when executing test method.")
+
 (defvar ruby-test-unit-imenu-create-index-function 'ruby-imenu-create-index
   "Set `ruby-imenu-create-index' function defined at `ruby-mode'.")
 
@@ -154,6 +157,9 @@ RUBY-OPTIONS is ruby intepreter's options."
                                                         test-class-name
                                                         test-options
                                                         ruby-options)
+          (if ruby-test-unit-runner-options-at-test-method
+              (concat " " ruby-test-unit-runner-options-at-test-method)
+            "")
           " " (shell-quote-argument (concat "-n" test-method-name))))
 
 (defun ruby-test-unit-get-test-location-command-string (test-file-name test-location &optional test-options ruby-options)
@@ -165,6 +171,9 @@ RUBY-OPTIONS is ruby intepreter's options."
   (concat (ruby-test-unit-get-test-file-command-string test-file-name
                                                        test-options
                                                        ruby-options)
+          (if ruby-test-unit-runner-options-at-test-method
+              (concat " " ruby-test-unit-runner-options-at-test-method)
+            "")
           " " (shell-quote-argument (concat "--location=" test-location))))
 
 ;;;#autoload
