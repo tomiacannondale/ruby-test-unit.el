@@ -146,34 +146,32 @@ RUBY-OPTIONS is ruby intepreter's options."
                                                        ruby-options)
           " " (shell-quote-argument (concat "-t" test-class-name))))
 
-(defun ruby-test-unit-get-test-method-command-string (test-file-name test-class-name test-method-name &optional test-options ruby-options)
+(defun ruby-test-unit-get-test-method-command-string (test-file-name test-class-name test-method-name &optional test-options test-options-at-method ruby-options)
   "Return the command string to execute the test method.
 TEST-FILE-NAME is target test file.
 TEST-CLASS-NAME is target test class.
 TEST-METHOD-NAME is target test method.
 TEST-OPTIONS is Test::Unit's options.
+TEST-OPTIONS-AT-METHOD is Test::Unit's options additional.
 RUBY-OPTIONS is ruby intepreter's options."
   (concat (ruby-test-unit-get-test-class-command-string test-file-name
                                                         test-class-name
                                                         test-options
                                                         ruby-options)
-          (if ruby-test-unit-runner-options-at-test-method
-              (concat " " ruby-test-unit-runner-options-at-test-method)
-            "")
+          (if test-options-at-method (concat " " test-options-at-method) "")
           " " (shell-quote-argument (concat "-n" test-method-name))))
 
-(defun ruby-test-unit-get-test-location-command-string (test-file-name test-location &optional test-options ruby-options)
+(defun ruby-test-unit-get-test-location-command-string (test-file-name test-location &optional test-options test-options-at-method ruby-options)
   "Return the command string to execute the test at location.
 TEST-FILE-NAME is target test file.
 TEST-LOCATION is target location.
 TEST-OPTIONS is Test::Unit's options.
+TEST-OPTIONS-AT-METHOD is Test::Unit's options additional.
 RUBY-OPTIONS is ruby intepreter's options."
   (concat (ruby-test-unit-get-test-file-command-string test-file-name
                                                        test-options
                                                        ruby-options)
-          (if ruby-test-unit-runner-options-at-test-method
-              (concat " " ruby-test-unit-runner-options-at-test-method)
-            "")
+          (if test-options-at-method (concat " " test-options-at-method) "")
           " " (shell-quote-argument (concat "--location=" test-location))))
 
 ;;;#autoload
@@ -190,10 +188,12 @@ If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
                      (ruby-test-unit-get-test-location-command-string test-file-name
                                                                       test-location
                                                                       ruby-test-unit-runner-options
+                                                                      ruby-test-unit-runner-options-at-test-method
                                                                       "-d")
                    (ruby-test-unit-get-test-location-command-string test-file-name
                                                                     test-location
-                                                                    ruby-test-unit-runner-options))))
+                                                                    ruby-test-unit-runner-options
+                                                                    ruby-test-unit-runner-options-at-test-method))))
             (compile command-string))
         (message "Not a ruby script file.")))))
 
@@ -216,11 +216,13 @@ If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
                                                                             test-class-name
                                                                             test-method-name
                                                                             ruby-test-unit-runner-options
+                                                                            ruby-test-unit-runner-options-at-test-method
                                                                             "-d")
                            (ruby-test-unit-get-test-method-command-string test-file-name
                                                                           test-class-name
                                                                           test-method-name
-                                                                          ruby-test-unit-runner-options))))
+                                                                          ruby-test-unit-runner-options
+                                                                          ruby-test-unit-runner-options-at-test-method))))
                     (compile command-string)))
               (message "Not found a Ruby Test::Unit method.")))
         (message "Not a ruby script file.")))))
