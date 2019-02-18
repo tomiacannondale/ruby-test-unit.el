@@ -33,6 +33,7 @@
 ;;
 ;; Key bindings in ruby-mode:
 ;;
+;;   C-c ,  ruby-test-unit-run-test-location
 ;;   C-c .  ruby-test-unit-run-test-method
 ;;   C-c @  ruby-test-unit-run-test-class
 ;;   C-c f  ruby-test-unit-run-test-file
@@ -270,6 +271,7 @@ If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
 ;;;#autoload
 (defun ruby-test-unit-keys ()
   "Set local key defs for ruby-test-unit in `ruby-mode'."
+  (define-key ruby-mode-map (kbd "C-c ,") 'ruby-test-unit-run-test-location)
   (define-key ruby-mode-map (kbd "C-c .") 'ruby-test-unit-run-test-method)
   (define-key ruby-mode-map (kbd "C-c @") 'ruby-test-unit-run-test-class)
   (define-key ruby-mode-map (kbd "C-c f") 'ruby-test-unit-run-test-file)

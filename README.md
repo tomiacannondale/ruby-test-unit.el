@@ -40,6 +40,7 @@ Key bindings in `ruby-mode`:
 
 |key bindings|functions                                  |
 |------------|-------------------------------------------|
+|`C-c` `,`   |`ruby-test-unit-run-test-location`         |
 |`C-c` `.`   |`ruby-test-unit-run-test-method`           |
 |`C-c` `@`   |`ruby-test-unit-run-test-class`            |
 |`C-c` `f`   |`ruby-test-unit-run-test-file`             |
