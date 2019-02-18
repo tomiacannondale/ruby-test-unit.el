@@ -155,6 +155,38 @@ RUBY-OPTIONS is ruby intepreter's options."
                                                         ruby-options)
           " " (shell-quote-argument (concat "-n" test-method-name))))
 
+(defun ruby-test-unit-get-test-location-command-string (test-file-name test-location &optional test-options ruby-options)
+  "Return the command string to execute the test at location.
+TEST-FILE-NAME is target test file.
+TEST-LOCATION is target location.
+TEST-OPTIONS is Test::Unit's options.
+RUBY-OPTIONS is ruby intepreter's options."
+  (concat (ruby-test-unit-get-test-file-command-string test-file-name
+                                                       test-options
+                                                       ruby-options)
+          " " (shell-quote-argument (concat "--location=" test-location))))
+
+;;;#autoload
+(defun ruby-test-unit-run-test-location (ruby-debug-option-p)
+  "Run current location test of Ruby Test::Unit at `compilation-mode'.
+If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
+  (interactive "P")
+  (save-excursion
+    (let ((test-file-name (ruby-test-unit-get-test-file-name))
+          (test-location (number-to-string (line-number-at-pos))))
+      (if test-file-name
+          (let ((command-string
+                 (if ruby-debug-option-p
+                     (ruby-test-unit-get-test-location-command-string test-file-name
+                                                                      test-location
+                                                                      ruby-test-unit-runner-options
+                                                                      "-d")
+                   (ruby-test-unit-get-test-location-command-string test-file-name
+                                                                    test-location
+                                                                    ruby-test-unit-runner-options))))
+            (compile command-string))
+        (message "Not a ruby script file.")))))
+
 ;;;#autoload
 (defun ruby-test-unit-run-test-method (ruby-debug-option-p)
   "Run test method of Ruby Test::Unit at `compilation-mode'.
