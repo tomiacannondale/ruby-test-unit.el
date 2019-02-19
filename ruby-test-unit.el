@@ -67,6 +67,9 @@
     (class-pos . 1)
     (method-pos . 2)))
 
+(defconst ruby-test-unit-test-code-regexp
+  "^\\s *def\\s +test_")
+
 (defun ruby-test-unit-test-method-index (ruby-imenu-index-alist)
   "Get test method index assoc-list from RUBY-IMENU-INDEX-ALIST."
   (seq-filter (lambda (index-pair)
@@ -117,6 +120,12 @@ RUBY-IMENU-INDEX-ALIST is searched."
                           test-method-full-name)
             (match-string (cdr (assq 'method-pos ruby-test-unit-test-method-regexp))
                           test-method-full-name))))
+
+(defun ruby-test-unit-search-test-code ()
+  "Search ruby Test::Unit's code in current buffer."
+  (goto-char (point-min))
+  (let ((case-fold-search nil))
+    (search-forward-regexp ruby-test-unit-test-code-regexp nil t)))
 
 (defun ruby-test-unit-get-test-file-name ()
   "Return the name of the test file opened in the current buffer."
@@ -180,8 +189,9 @@ RUBY-OPTIONS is ruby intepreter's options."
 If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
   (interactive "P")
   (save-excursion
-    (let ((test-file-name (ruby-test-unit-get-test-file-name))
-          (test-location (number-to-string (line-number-at-pos))))
+    (let ((test-location (number-to-string (line-number-at-pos)))
+          (test-file-name (if (ruby-test-unit-search-test-code)
+                              (ruby-test-unit-get-test-file-name))))
       (if test-file-name
           (let ((command-string
                  (if ruby-debug-option-p
@@ -195,7 +205,7 @@ If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
                                                                     ruby-test-unit-runner-options
                                                                     ruby-test-unit-runner-options-at-test-method))))
             (compile command-string))
-        (message "Not a ruby script file.")))))
+        (message "Not a ruby test file.")))))
 
 ;;;#autoload
 (defun ruby-test-unit-run-test-method (ruby-debug-option-p)
@@ -203,8 +213,9 @@ If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
 If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
   (interactive "P")
   (save-excursion
-    (let ((test-file-name (ruby-test-unit-get-test-file-name))
-          (pos (point)))
+    (let ((pos (point))
+          (test-file-name (if (ruby-test-unit-search-test-code)
+                              (ruby-test-unit-get-test-file-name))))
       (if test-file-name
           (let ((test-method-full-name (ruby-test-unit-find-nearest-test-method
                                         pos (funcall ruby-test-unit-imenu-create-index-function))))
@@ -225,7 +236,7 @@ If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
                                                                           ruby-test-unit-runner-options-at-test-method))))
                     (compile command-string)))
               (message "Not found a ruby Test::Unit method.")))
-        (message "Not a ruby script file.")))))
+        (message "Not a ruby test file.")))))
 
 ;;;#autoload
 (defun ruby-test-unit-run-test-class (ruby-debug-option-p)
@@ -233,8 +244,9 @@ If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
 If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
   (interactive "P")
   (save-excursion
-    (let ((test-file-name (ruby-test-unit-get-test-file-name))
-          (pos (point)))
+    (let ((pos (point))
+          (test-file-name (if (ruby-test-unit-search-test-code)
+                              (ruby-test-unit-get-test-file-name))))
       (if test-file-name
           (let ((test-class-name (ruby-test-unit-find-nearest-test-class
                                   pos (funcall ruby-test-unit-imenu-create-index-function))))
@@ -250,7 +262,7 @@ If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
                                                                        ruby-test-unit-runner-options))))
                   (compile command-string))
               (message "Not found a ruby Test::Unit test-case class.")))
-        (message "Not a ruby script file.")))))
+        (message "Not a ruby test file.")))))
 
 ;;;#autoload
 (defun ruby-test-unit-run-test-file (ruby-debug-option-p)
@@ -258,7 +270,8 @@ If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
 If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
   (interactive "P")
   (save-excursion
-    (let ((test-file-name (ruby-test-unit-get-test-file-name)))
+    (let ((test-file-name (if (ruby-test-unit-search-test-code)
+                              (ruby-test-unit-get-test-file-name))))
       (if test-file-name
           (let ((command-string
                  (if ruby-debug-option-p
@@ -268,7 +281,7 @@ If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
                    (ruby-test-unit-get-test-file-command-string test-file-name
                                                                 ruby-test-unit-runner-options))))
             (compile command-string))
-        (message "Not a ruby script file.")))))
+        (message "Not a ruby test file.")))))
 
 ;;;#autoload
 (defun ruby-test-unit-run-rake-test ()
