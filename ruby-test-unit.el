@@ -88,9 +88,13 @@
                                                (car test-method-index-pair))))
                            (ruby-test-unit-test-method-index ruby-imenu-index-alist)))))
     (seq-filter (lambda (index-pair)
-                  (seq-find (lambda (test-class-name)
-                              (equal (car index-pair) test-class-name))
-                            test-class-name-list))
+                  (or (seq-find (lambda (test-class-name)
+                                  (equal (car index-pair) test-class-name))
+                                test-class-name-list)
+                      (let ((case-fold-search t))
+                        (if (not (string-match-p "#" (car index-pair)))
+                            (string-match-p "test"
+                                            (car (last (split-string (car index-pair) "::"))))))))
                 ruby-imenu-index-alist)))
 
 (defun ruby-test-unit-find-nearest-target (pos index-alist)
@@ -105,13 +109,15 @@ INDEX-ALIST is searched."
   "Get the nearest test method.
 find the nearest target before POS.
 RUBY-IMENU-INDEX-ALIST is searched."
-  (car (ruby-test-unit-find-nearest-target pos (ruby-test-unit-test-method-index ruby-imenu-index-alist))))
+  (car (ruby-test-unit-find-nearest-target
+        pos (ruby-test-unit-test-method-index ruby-imenu-index-alist))))
 
 (defun ruby-test-unit-find-nearest-test-class (pos ruby-imenu-index-alist)
   "Get the nearest test class.
 find the nearest target before POS.
 RUBY-IMENU-INDEX-ALIST is searched."
-  (car (ruby-test-unit-find-nearest-target pos (ruby-test-unit-test-class-index ruby-imenu-index-alist))))
+  (car (ruby-test-unit-find-nearest-target
+        pos (ruby-test-unit-test-class-index ruby-imenu-index-alist))))
 
 (defun ruby-test-unit-split-test-method (test-method-full-name)
   "Get class name and method name form TEST-METHOD-FULL-NAME."
