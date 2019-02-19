@@ -67,8 +67,9 @@
     (class-pos . 1)
     (method-pos . 2)))
 
-(defconst ruby-test-unit-test-code-regexp
-  "^\\s *def\\s +test_")
+(defconst ruby-test-unit-test-code-regexp-list
+  '("^\\s *def\\s +test_"               ; ex. def test_...
+    "^\\s *test\\>.*\\(\\<do\\|{\\)"))  ; ex. test "..." do
 
 (defun ruby-test-unit-test-method-index (ruby-imenu-index-alist)
   "Get test method index assoc-list from RUBY-IMENU-INDEX-ALIST."
@@ -123,9 +124,11 @@ RUBY-IMENU-INDEX-ALIST is searched."
 
 (defun ruby-test-unit-search-test-code ()
   "Search ruby Test::Unit's code in current buffer."
-  (goto-char (point-min))
-  (let ((case-fold-search nil))
-    (search-forward-regexp ruby-test-unit-test-code-regexp nil t)))
+  (seq-find (lambda (test-code-regexp)
+              (goto-char (point-min))
+              (let ((case-fold-search nil))
+                (re-search-forward test-code-regexp nil t)))
+            ruby-test-unit-test-code-regexp-list))
 
 (defun ruby-test-unit-get-test-file-name ()
   "Return the name of the test file opened in the current buffer."
