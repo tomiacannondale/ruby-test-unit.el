@@ -48,16 +48,16 @@
 (require 'seq)
 
 (defvar ruby-test-unit-ruby-command "bundle exec ruby"
-  "Ruby command to run test of Ruby Test::Unit at `compilation-mode'.")
+  "Ruby command to run test of ruby Test::Unit at `compilation-mode'.")
 
 (defvar ruby-test-unit-rake-test-command "bundle exec rake test"
   "Rake command to run test task at `compilation-mode'.")
 
 (defvar ruby-test-unit-runner-options nil
-  "Command options of Ruby Test::Unit.")
+  "Command options of ruby Test::Unit.")
 
 (defvar ruby-test-unit-runner-options-at-test-method "-v"
-  "Command options of Ruby Test::Unit when executing test method.")
+  "Command options of ruby Test::Unit when executing test method.")
 
 (defvar ruby-test-unit-imenu-create-index-function 'ruby-imenu-create-index
   "Set `ruby-imenu-create-index' function defined at `ruby-mode'.")
@@ -176,7 +176,7 @@ RUBY-OPTIONS is ruby intepreter's options."
 
 ;;;#autoload
 (defun ruby-test-unit-run-test-location (ruby-debug-option-p)
-  "Run current location test of Ruby Test::Unit at `compilation-mode'.
+  "Run current location test of ruby Test::Unit at `compilation-mode'.
 If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
   (interactive "P")
   (save-excursion
@@ -199,7 +199,7 @@ If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
 
 ;;;#autoload
 (defun ruby-test-unit-run-test-method (ruby-debug-option-p)
-  "Run test method of Ruby Test::Unit at `compilation-mode'.
+  "Run test method of ruby Test::Unit at `compilation-mode'.
 If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
   (interactive "P")
   (save-excursion
@@ -224,12 +224,12 @@ If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
                                                                           ruby-test-unit-runner-options
                                                                           ruby-test-unit-runner-options-at-test-method))))
                     (compile command-string)))
-              (message "Not found a Ruby Test::Unit method.")))
+              (message "Not found a ruby Test::Unit method.")))
         (message "Not a ruby script file.")))))
 
 ;;;#autoload
 (defun ruby-test-unit-run-test-class (ruby-debug-option-p)
-  "Run test class of Ruby Test::Unit at `compilation-mode'.
+  "Run test class of ruby Test::Unit at `compilation-mode'.
 If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
   (interactive "P")
   (save-excursion
@@ -249,12 +249,12 @@ If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
                                                                        test-class-name
                                                                        ruby-test-unit-runner-options))))
                   (compile command-string))
-              (message "Not found a Ruby Test::Unit test-case class.")))
+              (message "Not found a ruby Test::Unit test-case class.")))
         (message "Not a ruby script file.")))))
 
 ;;;#autoload
 (defun ruby-test-unit-run-test-file (ruby-debug-option-p)
-  "Run test file of Ruby Test::Unit at `compilation-mode'.
+  "Run test file of ruby Test::Unit at `compilation-mode'.
 If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
   (interactive "P")
   (save-excursion
@@ -272,7 +272,7 @@ If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
 
 ;;;#autoload
 (defun ruby-test-unit-run-rake-test ()
-  "Run test task of Rake at `compilation-mode'."
+  "Run test task of rake at `compilation-mode'."
   (interactive)
   (compile (concat ruby-test-unit-rake-test-command
                    (if ruby-test-unit-runner-options
