@@ -92,7 +92,7 @@
                                   (equal (car index-pair) test-class-name))
                                 test-class-name-list)
                       (let ((case-fold-search t))
-                        (if (not (string-match-p "#" (car index-pair)))
+                        (if (not (string-match-p "[#.]" (car index-pair)))
                             (string-match-p "test"
                                             (car (last (split-string (car index-pair) "::"))))))))
                 ruby-imenu-index-alist)))
