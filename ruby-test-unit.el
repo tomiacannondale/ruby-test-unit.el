@@ -69,7 +69,9 @@
 
 (defconst ruby-test-unit-test-code-regexp-list
   '("^\\s *def\\s +test_"               ; ex. def test_...
-    "^\\s *test\\>.*\\(\\<do\\|{\\)"))  ; ex. test "..." do
+    "^\\s *test\\>.*\\(\\<do\\|{\\)"    ; ex. test "..." do
+    "<\\s *Test::Unit::TestCase\\>"     ; ex. < Test::Unit::TestCase
+    "^\\s *require.*\\<test/unit\\>"))  ; ex. require 'test/unit'
 
 (defun ruby-test-unit-test-method-index (ruby-imenu-index-alist)
   "Get test method index assoc-list from RUBY-IMENU-INDEX-ALIST."
