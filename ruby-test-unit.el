@@ -67,11 +67,14 @@
     (class-pos . 1)
     (method-pos . 2)))
 
+(defconst ruby-test-unit-test-case-regexp
+  "^\\s *class\\s .*<\\s *Test::Unit::TestCase\\>") ; ex. class ... < Test::Unit::TestCase
+
 (defconst ruby-test-unit-test-code-regexp-list
-  '("^\\s *def\\s +test_"               ; ex. def test_...
-    "^\\s *test\\>.*\\(\\<do\\|{\\)"    ; ex. test "..." do
-    "<\\s *Test::Unit::TestCase\\>"     ; ex. < Test::Unit::TestCase
-    "^\\s *require.*\\<test/unit\\>"))  ; ex. require 'test/unit'
+  (list "^\\s *def\\s +test_"               ; ex. def test_...
+        "^\\s *test\\>.*\\(\\<do\\|{\\)"    ; ex. test "..." do
+        ruby-test-unit-test-case-regexp
+        "^\\s *require.*\\<test/unit\\>"))  ; ex. require 'test/unit'
 
 (defun ruby-test-unit-test-method-index (ruby-imenu-index-alist)
   "Get test method index assoc-list from RUBY-IMENU-INDEX-ALIST."
@@ -90,13 +93,13 @@
                                                (car test-method-index-pair))))
                            (ruby-test-unit-test-method-index ruby-imenu-index-alist)))))
     (seq-filter (lambda (index-pair)
-                  (or (seq-find (lambda (test-class-name)
-                                  (equal (car index-pair) test-class-name))
-                                test-class-name-list)
-                      (let ((case-fold-search t))
+                  (or (seq-contains  test-class-name-list (car index-pair))
+                      (let ((case-fold-search nil))
                         (if (not (string-match-p "[#.]" (car index-pair)))
-                            (string-match-p "test"
-                                            (car (last (split-string (car index-pair) "::"))))))))
+                            (progn
+                              (goto-char (cdr index-pair))
+                              (string-match-p ruby-test-unit-test-case-regexp
+                                              (buffer-substring (line-beginning-position) (line-end-position))))))))
                 ruby-imenu-index-alist)))
 
 (defun ruby-test-unit-find-nearest-target (pos index-alist)
