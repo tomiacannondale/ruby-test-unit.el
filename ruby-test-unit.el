@@ -143,9 +143,10 @@ RUBY-IMENU-INDEX-ALIST is searched."
 
 (defun ruby-test-unit-get-test-file-name ()
   "Return the name of the test file opened in the current buffer."
-  (let ((file-name (buffer-file-name)))
+  (let ((file-name (buffer-file-name))
+        (case-fold-search t))
     (if file-name
-        (if (string-match ".*\\.[Rr][Bb]$" file-name)
+        (if (string-match "\\`.+\\.rb\\'" file-name)
             file-name))))
 
 (defun ruby-test-unit-get-test-file-command-string (test-file-name &optional test-options ruby-options)
