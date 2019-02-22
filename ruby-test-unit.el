@@ -318,9 +318,9 @@ If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
 
 (defun ruby-test-unit-compilation-errors ()
   "Set error defs for ruby-test-unit in `compilation-mode'."
-  (dolist (i '((ruby-1 "\\s-*\\[?\\(\\S-+\\):\\([0-9]+\\)\\(?::in\\|$\\)" 1 2)
-               (ruby-2 "\\s-*from \\(\\S-+\\):\\([0-9]+\\)\\(?::in\\|$\\)" 1 2)
-               (ruby-3 "\\[\\(\\S-+\\):\\([0-9]+\\)\\]:$" 1 2)))
+  (dolist (i '((ruby-test-unit-1 "\\s-*\\[?\\(\\S-+\\):\\([0-9]+\\)\\(?::in\\|$\\)" 1 2)
+               (ruby-test-unit-2 "\\s-*from \\(\\S-+\\):\\([0-9]+\\)\\(?::in\\|$\\)" 1 2)
+               (ruby-test-unit-3 "\\[\\(\\S-+\\):\\([0-9]+\\)\\]:$" 1 2)))
     (add-to-list 'compilation-error-regexp-alist (car i))
     (add-to-list 'compilation-error-regexp-alist-alist i)))
 
