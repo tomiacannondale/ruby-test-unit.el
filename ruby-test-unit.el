@@ -197,17 +197,26 @@ RUBY-OPTIONS is ruby intepreter's options."
           (if test-options-at-method (concat " " test-options-at-method) "")
           " " (shell-quote-argument (concat "--location=" test-location))))
 
+(defun ruby-test-unit-run-compile (command-string-function)
+  "Run `compile' with the command returned by COMMAND-STRING-FUNCTION."
+  (let ((command-string (save-excursion
+                          (funcall command-string-function))))
+    (if command-string
+        (compile command-string))))
+
 ;;;#autoload
 (defun ruby-test-unit-run-test-location (ruby-debug-option-p)
   "Run current location test of ruby Test::Unit at `compilation-mode'.
 If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
   (interactive "P")
-  (save-excursion
-    (let ((test-location (number-to-string (line-number-at-pos)))
-          (test-file-name (if (ruby-test-unit-search-test-code)
-                              (ruby-test-unit-get-test-file-name))))
-      (if test-file-name
-          (let ((command-string
+  (ruby-test-unit-run-compile
+   (lambda ()
+     (let ((command-string nil)
+           (test-location (number-to-string (line-number-at-pos)))
+           (test-file-name (if (ruby-test-unit-search-test-code)
+                               (ruby-test-unit-get-test-file-name))))
+       (if test-file-name
+           (setq command-string
                  (if ruby-debug-option-p
                      (ruby-test-unit-get-test-location-command-string test-file-name
                                                                       test-location
@@ -217,25 +226,27 @@ If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
                    (ruby-test-unit-get-test-location-command-string test-file-name
                                                                     test-location
                                                                     ruby-test-unit-runner-options
-                                                                    ruby-test-unit-runner-options-at-test-method))))
-            (compile command-string))
-        (message "Not a ruby test file.")))))
+                                                                    ruby-test-unit-runner-options-at-test-method)))
+         (message "Not a ruby test file."))
+       command-string))))
 
 ;;;#autoload
 (defun ruby-test-unit-run-test-method (ruby-debug-option-p)
   "Run test method of ruby Test::Unit at `compilation-mode'.
 If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
   (interactive "P")
-  (save-excursion
-    (let ((pos (point))
-          (test-file-name (if (ruby-test-unit-search-test-code)
-                              (ruby-test-unit-get-test-file-name))))
-      (if test-file-name
-          (let ((test-method-full-name (ruby-test-unit-find-nearest-test-method
-                                        pos (funcall ruby-test-unit-imenu-create-index-function))))
-            (if test-method-full-name
-                (seq-let (test-class-name test-method-name) (ruby-test-unit-split-test-method test-method-full-name)
-                  (let ((command-string
+  (ruby-test-unit-run-compile
+   (lambda ()
+     (let ((command-string nil)
+           (pos (point))
+           (test-file-name (if (ruby-test-unit-search-test-code)
+                               (ruby-test-unit-get-test-file-name))))
+       (if test-file-name
+           (let ((test-method-full-name (ruby-test-unit-find-nearest-test-method
+                                         pos (funcall ruby-test-unit-imenu-create-index-function))))
+             (if test-method-full-name
+                 (seq-let (test-class-name test-method-name) (ruby-test-unit-split-test-method test-method-full-name)
+                   (setq command-string
                          (if ruby-debug-option-p
                              (ruby-test-unit-get-test-method-command-string test-file-name
                                                                             test-class-name
@@ -248,24 +259,26 @@ If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
                                                                           test-method-name
                                                                           ruby-test-unit-runner-options
                                                                           ruby-test-unit-runner-options-at-test-method))))
-                    (compile command-string)))
-              (message "Not found a ruby Test::Unit method.")))
-        (message "Not a ruby test file.")))))
+               (message "Not found a ruby Test::Unit method.")))
+         (message "Not a ruby test file."))
+       command-string))))
 
 ;;;#autoload
 (defun ruby-test-unit-run-test-class (ruby-debug-option-p)
   "Run test class of ruby Test::Unit at `compilation-mode'.
 If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
   (interactive "P")
-  (save-excursion
-    (let ((pos (point))
-          (test-file-name (if (ruby-test-unit-search-test-code)
-                              (ruby-test-unit-get-test-file-name))))
-      (if test-file-name
-          (let ((test-class-name (ruby-test-unit-find-nearest-test-class
-                                  pos (funcall ruby-test-unit-imenu-create-index-function))))
-            (if test-class-name
-                (let ((command-string
+  (ruby-test-unit-run-compile
+   (lambda ()
+     (let ((command-string nil)
+           (pos (point))
+           (test-file-name (if (ruby-test-unit-search-test-code)
+                               (ruby-test-unit-get-test-file-name))))
+       (if test-file-name
+           (let ((test-class-name (ruby-test-unit-find-nearest-test-class
+                                   pos (funcall ruby-test-unit-imenu-create-index-function))))
+             (if test-class-name
+                 (setq command-string
                        (if ruby-debug-option-p
                            (ruby-test-unit-get-test-class-command-string test-file-name
                                                                          test-class-name
@@ -273,29 +286,31 @@ If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
                                                                          "-d")
                          (ruby-test-unit-get-test-class-command-string test-file-name
                                                                        test-class-name
-                                                                       ruby-test-unit-runner-options))))
-                  (compile command-string))
-              (message "Not found a ruby Test::Unit test-case class.")))
-        (message "Not a ruby test file.")))))
+                                                                       ruby-test-unit-runner-options)))
+               (message "Not found a ruby Test::Unit test-case class.")))
+         (message "Not a ruby test file."))
+       command-string))))
 
 ;;;#autoload
 (defun ruby-test-unit-run-test-file (ruby-debug-option-p)
   "Run test file of ruby Test::Unit at `compilation-mode'.
 If RUBY-DEBUG-OPTION-P is true, execute the test with the debug option (-d)."
   (interactive "P")
-  (save-excursion
-    (let ((test-file-name (if (ruby-test-unit-search-test-code)
-                              (ruby-test-unit-get-test-file-name))))
-      (if test-file-name
-          (let ((command-string
+  (ruby-test-unit-run-compile
+   (lambda ()
+     (let ((command-string nil)
+           (test-file-name (if (ruby-test-unit-search-test-code)
+                               (ruby-test-unit-get-test-file-name))))
+       (if test-file-name
+           (setq command-string
                  (if ruby-debug-option-p
                      (ruby-test-unit-get-test-file-command-string test-file-name
                                                                   ruby-test-unit-runner-options
                                                                   "-d")
                    (ruby-test-unit-get-test-file-command-string test-file-name
-                                                                ruby-test-unit-runner-options))))
-            (compile command-string))
-        (message "Not a ruby test file.")))))
+                                                                ruby-test-unit-runner-options)))
+         (message "Not a ruby test file."))
+       command-string))))
 
 ;;;#autoload
 (defun ruby-test-unit-run-rake-test ()
