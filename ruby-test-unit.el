@@ -79,7 +79,7 @@
 (defun ruby-test-unit-test-method-index (ruby-imenu-index-alist)
   "Get test method index assoc-list from RUBY-IMENU-INDEX-ALIST."
   (seq-filter (lambda (index-pair)
-                (string-match-p (cdr (assq 'pattern ruby-test-unit-test-method-regexp))
+                (string-match-p (alist-get 'pattern ruby-test-unit-test-method-regexp)
                                 (car index-pair)))
               ruby-imenu-index-alist))
 
@@ -87,9 +87,9 @@
   "Get test class index assoc-list from RUBY-IMENU-INDEX-ALIST."
   (let ((test-class-name-list
          (seq-uniq (mapcar (lambda (test-method-index-pair)
-                             (if (string-match (cdr (assq 'pattern ruby-test-unit-test-method-regexp))
+                             (if (string-match (alist-get 'pattern ruby-test-unit-test-method-regexp)
                                                (car test-method-index-pair))
-                                 (match-string (cdr (assq 'class-pos ruby-test-unit-test-method-regexp))
+                                 (match-string (alist-get 'class-pos ruby-test-unit-test-method-regexp)
                                                (car test-method-index-pair))))
                            (ruby-test-unit-test-method-index ruby-imenu-index-alist)))))
     (seq-filter (lambda (index-pair)
@@ -126,11 +126,11 @@ RUBY-IMENU-INDEX-ALIST is searched."
 
 (defun ruby-test-unit-split-test-method (test-method-full-name)
   "Get class name and method name form TEST-METHOD-FULL-NAME."
-  (if (string-match (cdr (assq 'pattern ruby-test-unit-test-method-regexp))
+  (if (string-match (alist-get 'pattern ruby-test-unit-test-method-regexp)
                     test-method-full-name)
-      (list (match-string (cdr (assq 'class-pos ruby-test-unit-test-method-regexp))
+      (list (match-string (alist-get 'class-pos ruby-test-unit-test-method-regexp)
                           test-method-full-name)
-            (match-string (cdr (assq 'method-pos ruby-test-unit-test-method-regexp))
+            (match-string (alist-get 'method-pos ruby-test-unit-test-method-regexp)
                           test-method-full-name))))
 
 (defun ruby-test-unit-search-test-code ()
