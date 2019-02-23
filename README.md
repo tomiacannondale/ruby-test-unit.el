@@ -38,11 +38,11 @@ modity `.emacs` to set `ruby-test-unit` key definition in `ruby-mode`.
 
 Key bindings in `ruby-mode`:
 
-|key bindings|functions                                  |
-|------------|-------------------------------------------|
-|`C-c` `,`   |`ruby-test-unit-run-test-location`         |
-|`C-c` `.`   |`ruby-test-unit-run-test-method`           |
-|`C-c` `@`   |`ruby-test-unit-run-test-class`            |
-|`C-c` `f`   |`ruby-test-unit-run-test-file`             |
-|`C-c` `r`   |`ruby-test-unit-run-rake-test`             |
-|`C-c` `c`   |`compile` (use to run the last test again) |
+|key binding|function                          |description                             |
+|-----------|----------------------------------|----------------------------------------|
+|`C-c` `,`  |`ruby-test-unit-run-test-location`|run ruby test at cursor point           |
+|`C-c` `.`  |`ruby-test-unit-run-test-method`  |run ruby test method at cursor point    |
+|`C-c` `@`  |`ruby-test-unit-run-test-class`   |run ruby test-case class at cursor point|
+|`C-c` `f`  |`ruby-test-unit-run-test-file`    |run ruby test file of current buffer    |
+|`C-c` `r`  |`ruby-test-unit-run-rake-test`    |run rake test                           |
+|`C-c` `c`  |`compile`                         |use to run the last test again          |
