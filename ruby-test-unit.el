@@ -68,13 +68,13 @@
     (method-pos . 2)))
 
 (defconst ruby-test-unit-test-case-regexp
-  "^\\s *class\\s .*<\\s *Test::Unit::TestCase\\>") ; ex. class ... < Test::Unit::TestCase
+  "^\\s *class\\s .*<\\s *Test::Unit::TestCase\\s *\\($\\|;\\)") ; ex. class ... < Test::Unit::TestCase
 
 (defconst ruby-test-unit-test-code-regexp-list
-  (list "^\\s *def\\s +test_"               ; ex. def test_...
-        "^\\s *test\\>.*\\(\\<do\\|{\\)"    ; ex. test "..." do
+  (list "^\\s *def\\s +test_"                                                                     ; ex. def test_...
+        "^\\s *test\\(\\s *(\\)?\\s *\\s\".+\\s\"\\s *\\()\\s *\\)?\\(do\\s *\\($\\|;\\)\\|{\\)"  ; ex. test "..." do, test('...') {
         ruby-test-unit-test-case-regexp
-        "^\\s *require.*\\<test/unit\\>"))  ; ex. require 'test/unit'
+        "^\\s *require.*\\s\"test/unit\\s\""))                                                    ; ex. require 'test/unit'
 
 (defun ruby-test-unit-test-method-index (ruby-imenu-index-alist)
   "Get test method index assoc-list from RUBY-IMENU-INDEX-ALIST."
