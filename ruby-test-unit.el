@@ -93,7 +93,7 @@
                                                (car test-method-index-pair))))
                            (ruby-test-unit-test-method-index ruby-imenu-index-alist)))))
     (seq-filter (lambda (index-pair)
-                  (or (seq-contains  test-class-name-list (car index-pair))
+                  (or (seq-contains test-class-name-list (car index-pair))
                       (let ((case-fold-search nil))
                         (if (not (string-match-p "[#.]" (car index-pair)))
                             (progn
@@ -155,7 +155,7 @@ TEST-FILE-NAME is target test file.
 TEST-OPTIONS is Test::Unit's options.
 RUBY-OPTIONS is ruby intepreter's options."
   (concat ruby-test-unit-ruby-command
-          (if ruby-options (concat  " " ruby-options) "")
+          (if ruby-options (concat " " ruby-options) "")
           " " (shell-quote-argument test-file-name)
           (if test-options (concat " " test-options) "")))
 
