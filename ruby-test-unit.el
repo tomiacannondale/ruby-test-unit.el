@@ -4,7 +4,7 @@
 
 ;; Author: Yoshinori Toki <toki@freedom.ne.jp>
 ;; Version: 0.2
-;; Package-Requires: ((compile) (ruby-mode) (seq))
+;; Package-Requires: ((compile) (ruby-mode) (seq) (tramp))
 ;; Keywords: ruby, test
 ;; URL: https://github.com/y10k/ruby-test-unit.el
 
@@ -46,6 +46,7 @@
 (require 'compile)
 (require 'ruby-mode)
 (require 'seq)
+(require 'tramp)
 
 (defvar ruby-test-unit-ruby-command "bundle exec ruby"
   "Ruby command to run test of ruby Test::Unit at `compilation-mode'.")
@@ -146,6 +147,8 @@ RUBY-IMENU-INDEX-ALIST is searched."
   (let ((file-name (buffer-file-name))
         (case-fold-search t))
     (if file-name
+        (if (string-match tramp-initial-file-name-regexp file-name)
+            (setq file-name (substring file-name (match-end 0) nil)))
         (if (string-match "\\`.+\\.rb\\'" file-name)
             file-name))))
 
