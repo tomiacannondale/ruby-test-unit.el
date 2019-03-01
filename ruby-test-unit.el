@@ -4,7 +4,7 @@
 
 ;; Author: Yoshinori Toki <toki@freedom.ne.jp>
 ;; Version: 0.2
-;; Package-Requires: ((compile) (ruby-mode) (seq) (tramp))
+;; Package-Requires: ((compile) (ruby-mode) (seq))
 ;; Keywords: ruby, test
 ;; URL: https://github.com/y10k/ruby-test-unit.el
 
@@ -46,7 +46,6 @@
 (require 'compile)
 (require 'ruby-mode)
 (require 'seq)
-(require 'tramp)
 
 (defvar ruby-test-unit-ruby-command "bundle exec ruby"
   "Ruby command to run test of ruby Test::Unit at `compilation-mode'.")
@@ -76,6 +75,8 @@
         "^\\s *test\\(\\s *(\\)?\\s *\\s\".+\\s\"\\s *\\()\\s *\\)?\\(do\\s *\\($\\|;\\)\\|{\\)"  ; ex. test "..." do, test('...') {
         ruby-test-unit-test-case-regexp
         "^\\s *require.*\\s\"test/unit\\s\""))                                                    ; ex. require 'test/unit'
+
+(defconst ruby-test-unit-tramp-file-name-prefix-regexp "\\`/.+:.*:")
 
 (defun ruby-test-unit-test-method-index (ruby-imenu-index-alist)
   "Get test method index assoc-list from RUBY-IMENU-INDEX-ALIST."
@@ -147,10 +148,11 @@ RUBY-IMENU-INDEX-ALIST is searched."
   (let ((file-name (buffer-file-name))
         (case-fold-search t))
     (if file-name
-        (if (string-match tramp-initial-file-name-regexp file-name)
-            (setq file-name (substring file-name (match-end 0) nil)))
-        (if (string-match "\\`.+\\.rb\\'" file-name)
-            file-name))))
+        (progn
+          (if (string-match ruby-test-unit-tramp-file-name-prefix-regexp file-name)
+              (setq file-name (substring file-name (match-end 0) nil)))
+          (if (string-match-p "\\`.+\\.rb\\'" file-name)
+              file-name)))))
 
 (defun ruby-test-unit-get-test-file-command-string (test-file-name &optional test-options ruby-options)
   "Return the command string to execute the test file.
