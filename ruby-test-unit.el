@@ -28,8 +28,7 @@
 ;; modity .emacs to set ruby-test-unit key definition in ruby-mode.
 ;;
 ;;   (require 'ruby-test-unit)
-;;   (add-hook 'ruby-mode-hook
-;;             (lambda () (ruby-test-unit-keys)))
+;;   (add-hook 'ruby-mode-hook #'ruby-test-unit-keys)
 ;;
 ;; Key bindings in ruby-mode:
 ;;
